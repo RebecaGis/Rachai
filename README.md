@@ -65,18 +65,5 @@ Tablets
 
 Smartphones
 
-🔧 Desenvolvimento
-Para contribuir com o projeto:
-
-bash
-# Clone o repositório
-git clone https://github.com/seuusuario/racha-ai.git
-
-# Abra o arquivo index.html em seu navegador
-# ou use um servidor local como:
-python -m http.server 8000
-📄 Licença
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
-
 👥 Créditos
 Desenvolvido com ❤️ por Levant by Rebeca Moura
