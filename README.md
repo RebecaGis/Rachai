@@ -1,71 +1,81 @@
-ACESSE AQUI >>> https://rachaai.netlify.app/
+# Racha Aí
 
-# Racha aí
-Racha Aí 💸 Seu app oficial de rachadinhas (as Legais)!  O Racha Aí é uma aplicação web moderna e intuitiva para divisão de despesas entre grupos. Perfeito para viagens, festas, churrascos ou qualquer situação onde as contas precisam ser divididas de forma justa e transparente.
+Aplicação web para dividir despesas de eventos entre participantes, calcular saldos e sugerir acertos.
 
-✨ Funcionalidades
+[Acessar o aplicativo publicado](https://rachaai.netlify.app/)
 
-🎯 Sistema de Eventos: Crie eventos separados para cada ocasião (churrasco, viagem, festa)
+## Funcionalidades
 
-👥 Gerenciamento de Participantes: Adicione e remova participantes dos eventos
+- Criação e exclusão de eventos com nome e descrição.
+- Cadastro de participantes e despesas com pagante e grupo de divisão.
+- Cálculo de saldos e sugestões de pagamentos entre participantes.
+- Exportação do evento em JSON e relatórios em Excel e PDF.
+- Tema claro e escuro, com interface responsiva.
 
-💳 Registro de Despesas: Registre gastos com descrição, valor e quem pagou
+## Executar localmente
 
-⚖️ Cálculo Automático: Divisão igualitária das despesas entre os participantes
+O aplicativo é estático: não exige instalação de pacotes ou processo de build. Com Python 3 instalado, execute na pasta do projeto:
 
-📊 Visualização de Saldos: Veja quem deve receber e quem deve pagar
+```bash
+python -m http.server 8000
+```
 
-🤝 Sugestões de Acertos: Recomendações de quem deve pagar quanto para quem
+Abra http://localhost:8000. Também é possível abrir `index.html` diretamente, mas um servidor local fornece uma origem mais previsível para o armazenamento do navegador.
 
-🎨 Tema Claro/Escuro: Alternância entre modos de visualização
+Internet é necessária para carregar as bibliotecas externas. Não é garantido funcionamento completo offline.
 
-💾 Persistência de Dados: Seus eventos ficam salvos no navegador
+## Como usar
 
-📤 Exportação: Exporte eventos em formato JSON para backup
+1. Crie um evento e adicione seus participantes.
+2. Cadastre cada despesa, informe quem pagou e selecione quem participa da divisão.
+3. Consulte saldos e sugestões de acerto.
+4. Exporte JSON para guardar uma cópia dos dados, ou gere relatórios Excel/PDF.
 
-🚀 Tecnologias Utilizadas
-HTML5: Estrutura semântica e moderna
+Excluir um participante também exclui as despesas em que ele aparece. Limpar um evento remove seus participantes e despesas. Revise a confirmação antes de prosseguir.
 
-CSS3: Design responsivo com variáveis CSS e Flexbox
+## Armazenamento e privacidade
 
-JavaScript: Lógica de aplicação e manipulação do DOM
+Os eventos ficam no `localStorage`, na chave `rachaAiEvents`; o tema usa a chave `theme`. Não há conta, sincronização entre dispositivos ou backend próprio no código recuperado.
 
-LocalStorage: Persistência de dados no navegador
+Dados de `localhost`, arquivo local e site Netlify são separados pelo navegador. Abrir a cópia local não transfere os eventos salvos no site publicado. Limpar dados do navegador pode apagar os registros. O JSON exportado é uma cópia para arquivo; esta versão não possui importação de JSON pela interface.
 
-Font Awesome: Ícones para melhor experiência visual
+## Estrutura
 
-📦 Como Usar
+| Arquivo | Finalidade |
+| --- | --- |
+| `index.html` | Aplicativo completo, com estilos e lógica incorporados |
+| `docs/RECUPERACAO.md` | Origem, integridade, análise e limitações |
+| `tests/smoke.cjs` | Verificação básica da estrutura e dos cálculos |
+| `package.json` | Atalho opcional para executar as verificações com Node.js |
+| `LICENSE` | Licença existente no repositório |
 
-1. Acesse o Racha Aí (ou abra o arquivo HTML localmente)
+## Bibliotecas externas
 
-2. Crie um novo evento com nome e descrição
+| Biblioteca | Versão referenciada | Uso |
+| --- | --- | --- |
+| Font Awesome | 6.4.0 | Ícones |
+| jsPDF | 2.5.1 | Exportação PDF |
+| jsPDF AutoTable | 3.5.28 | Tabelas no PDF |
+| SheetJS / xlsx | 0.18.5 | Exportação Excel |
 
-3. Adicione os participantes do evento
+As bibliotecas são carregadas por CDN. As versões acima reproduzem o site recuperado e não representam uma atualização ou auditoria das dependências.
 
-4. Registre as despesas informando valor, quem pagou e entre quem dividir
+## Verificações
 
-5. Consulte a aba de saldos para ver quem deve a quem
+Com Node.js instalado, sem instalar dependências:
 
-6. Use as sugestões de acertos para resolver as dívidas
+```bash
+npm test
+```
 
-🎨 Personalização
+O teste verifica referências locais, sintaxe, inicialização em ambiente simulado, criação e persistência de evento e um cenário de divisão e acerto. Não substitui testes de navegador nem valida os arquivos PDF/Excel gerados.
 
-O app oferece duas opções de tema:
+## Recuperação e publicação
 
-Tema Claro: Interface limpa e vibrante perfeita para uso diurno
+O `index.html` foi recuperado da resposta pública de https://rachaai.netlify.app/ em 10/11/2026. O arquivo preserva o código recebido, sem refatoração. Consulte [o registro da recuperação](docs/RECUPERACAO.md).
 
-Tema Escuro: Modo escuro com cores suaves para uso noturno
+Esta recuperação não exige alterar o site existente. Nenhuma configuração de Netlify, domínio ou deploy foi adicionada. A branch de recuperação deve ser revisada antes de integração; uma integração em branch ligada à hospedagem pode disparar um deploy automático.
 
-A preferência de tema é salva automaticamente para sua próxima visita.
+## Autoria
 
-📱 Responsividade
-O Racha Aí é totalmente responsivo e funciona perfeitamente em:
-
-Desktop e laptops
-
-Tablets
-
-Smartphones
-
-👥 Créditos
-Desenvolvido com ❤️ por Levant by Rebeca Moura
+Criado por **Levant by Rebeca Moura**, conforme os créditos da aplicação. A licença existente foi preservada; bibliotecas externas mantêm suas próprias licenças.

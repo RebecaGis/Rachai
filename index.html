@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racha Aí - Seu app oficial de rachadinhas (as Legais)!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Biblioteca para exportação em PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Biblioteca para exportação em Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #FF8E53;
+            --accent: #4ECDC4;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #1DD1A1;
+            --danger: #FF6B6B;
+            --warning: #FECA57;
+            --text: #333;
+            --bg: #f9fafb;
+            --card-bg: #fff;
+            --border: #e1e4e8;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --header-gradient: linear-gradient(135deg, #FF6B6B, #FF8E53);
+        }
+
+        .dark-theme {
+            --primary: #FF7F7F;
+            --secondary: #FF9E6B;
+            --accent: #57D6CD;
+            --light: #2a2d3a;
+            --dark: #e4e6eb;
+            --text: #e4e6eb;
+            --bg: #1a1c23;
+            --card-bg: #252734;
+            --border: #3a3d4c;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --header-gradient: linear-gradient(135deg, #C54B4B, #D47A4B);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        header {
+            background: var(--header-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .header-content h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.3rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            font-size: 1.3rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .flex {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .col {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        input, select, button, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: var(--card-bg);
+            color: var(--text);
+            transition: all 0.2s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+        
+        button {
+            background: var(--header-gradient);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            padding: 14px;
+            margin-top: 5px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        button.danger {
+            background: var(--danger);
+            width: auto;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        button.success {
+            background: var(--success);
+            width: auto;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        button.info {
+            background: var(--accent);
+            width: auto;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .participant-list, .expense-list, .event-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .participant-item, .expense-item, .event-item {
+            background: var(--light);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+        
+        .participant-item:hover, .expense-item:hover, .event-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .balance-positive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .balance-negative {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .settlement-item {
+            background: var(--light);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--light);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .theme-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 30px;
+        }
+        
+        .theme-container span {
+            font-size: 0.9rem;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            background: var(--light);
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            width: auto;
+            transform: scale(1.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            color: var(--text);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .signature {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .signature a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .signature a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .flex {
+                flex-direction: column;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .header-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .event-actions {
+                flex-direction: column;
+            }
+            
+            .tab-container {
+                flex-wrap: wrap;
+            }
+            
+            .theme-container {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-receipt logo-icon"></i>
+                    <div>
+                        <h1>Racha Aí</h1>
+                        <p>Seu app oficial de rachadinhas (as Legais)!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="theme-container">
+                <span><i class="fas fa-sun"></i></span>
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+                <span><i class="fas fa-moon"></i></span>
+            </div>
+        </header>
+        
+        <div class="tab-container">
+            <div class="tab active" data-tab="events">Eventos</div>
+            <div class="tab" data-tab="current-event">Evento Atual</div>
+        </div>
+        
+        <div id="events-tab">
+            <div class="card">
+                <h2><i class="fas fa-calendar-plus"></i> Criar Novo Evento</h2>
+                <div class="form-group">
+                    <label for="event-name">Nome do Evento:</label>
+                    <input type="text" id="event-name" placeholder="Ex: Churrasco, Viagem, Festa">
+                </div>
+                <div class="form-group">
+                    <label for="event-description">Descrição (opcional):</label>
+                    <textarea id="event-description" placeholder="Detalhes do evento" rows="3"></textarea>
+                </div>
+                <button id="create-event"><i class="fas fa-plus-circle"></i> Criar Evento</button>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-history"></i> Eventos Anteriores</h2>
+                <ul id="events-list" class="event-list"></ul>
+            </div>
+        </div>
+        
+        <div id="current-event-tab" class="hidden">
+            <div class="card">
+                <h2 id="current-event-name"><i class="fas fa-calendar-day"></i> Evento: <span id="event-title">Nenhum evento selecionado</span></h2>
+                <p id="event-description-text"></p>
+                <div class="event-actions">
+                    <button id="back-to-events" class="success"><i class="fas fa-arrow-left"></i> Voltar para Eventos</button>
+                    <button id="export-excel" class="info"><i class="fas fa-file-excel"></i> Exportar para Excel</button>
+                    <button id="export-pdf" class="info"><i class="fas fa-file-pdf"></i> Exportar para PDF</button>
+                    <button id="export-event" class="success"><i class="fas fa-download"></i> Exportar JSON</button>
+                    <button id="clear-event" class="danger"><i class="fas fa-trash"></i> Limpar Evento</button>
+                </div>
+            </div>
+            
+            <div class="flex">
+                <div class="col">
+                    <div class="card">
+                        <h2><i class="fas fa-users"></i> Participantes</h2>
+                        <div class="form-group">
+                            <label for="participant-name">Nome do participante:</label>
+                            <input type="text" id="participant-name" placeholder="Digite o nome">
+                        </div>
+                        <button id="add-participant"><i class="fas fa-plus-circle"></i> Adicionar Participante</button>
+                        
+                        <h3 style="margin-top: 20px;">Lista de Participantes</h3>
+                        <ul id="participants" class="participant-list"></ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h2><i class="fas fa-money-bill-wave"></i> Nova Despesa</h2>
+                        <div class="form-group">
+                            <label for="expense-desc">Descrição:</label>
+                            <input type="text" id="expense-desc" placeholder="Ex: Almoço, Supermercado">
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-amount">Valor (R$):</label>
+                            <input type="number" id="expense-amount" min="0" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label for="expense-payer">Quem pagou?</label>
+                            <select id="expense-payer"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Participantes na despesa:</label>
+                            <div id="expense-participants"></div>
+                        </div>
+                        <button id="add-expense"><i class="fas fa-check-circle"></i> Adicionar Despesa</button>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="card">
+                        <h2><i class="fas fa-list-alt"></i> Despesas Registradas</h2>
+                        <ul id="expenses" class="expense-list"></ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h2><i class="fas fa-scale-balanced"></i> Saldos</h2>
+                        <div id="balances"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h2><i class="fas fa-handshake"></i> Acertos</h2>
+                        <div id="settlements"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>Racha Aí &copy; 2025 - Simplificando suas divisões de despesas</div>
+        <div class="signature">
+            <span>criado por</span>
+            <a href="https://www.linkedin.com/in/rebeca-diniz-moura-46819241/" title="Conheça mais projetos">Levant by Rebeca Moura</a>
+            <i class="fas fa-heart" style="color: var(--primary);"></i>
+        </div>
+    </footer>
+
+    <script>
+        // Inicializar jsPDF
+        window.jsPDF = window.jspdf.jsPDF;
+        
+        // Dados da aplicação
+        let participants = [];
+        let expenses = [];
+        let events = JSON.parse(localStorage.getItem('rachaAiEvents')) || [];
+        let currentEvent = null;
+        
+        // Elementos do DOM
+        const participantNameInput = document.getElementById('participant-name');
+        const addParticipantBtn = document.getElementById('add-participant');
+        const participantsList = document.getElementById('participants');
+        const expenseDescInput = document.getElementById('expense-desc');
+        const expenseAmountInput = document.getElementById('expense-amount');
+        const expensePayerSelect = document.getElementById('expense-payer');
+        const expenseParticipantsDiv = document.getElementById('expense-participants');
+        const addExpenseBtn = document.getElementById('add-expense');
+        const expensesList = document.getElementById('expenses');
+        const balancesDiv = document.getElementById('balances');
+        const settlementsDiv = document.getElementById('settlements');
+        const themeToggle = document.getElementById('theme-toggle');
+        const eventsList = document.getElementById('events-list');
+        const eventNameInput = document.getElementById('event-name');
+        const eventDescriptionInput = document.getElementById('event-description');
+        const createEventBtn = document.getElementById('create-event');
+        const eventsTab = document.getElementById('events-tab');
+        const currentEventTab = document.getElementById('current-event-tab');
+        const currentEventName = document.getElementById('current-event-name');
+        const eventTitleSpan = document.getElementById('event-title');
+        const eventDescriptionText = document.getElementById('event-description-text');
+        const backToEventsBtn = document.getElementById('back-to-events');
+        const exportEventBtn = document.getElementById('export-event');
+        const exportExcelBtn = document.getElementById('export-excel');
+        const exportPdfBtn = document.getElementById('export-pdf');
+        const clearEventBtn = document.getElementById('clear-event');
+        const tabs = document.querySelectorAll('.tab');
+        
+        // Event Listeners
+        addParticipantBtn.addEventListener('click', addParticipant);
+        addExpenseBtn.addEventListener('click', addExpense);
+        themeToggle.addEventListener('change', toggleTheme);
+        createEventBtn.addEventListener('click', createEvent);
+        backToEventsBtn.addEventListener('click', backToEvents);
+        exportEventBtn.addEventListener('click', exportEvent);
+        exportExcelBtn.addEventListener('click', exportToExcel);
+        exportPdfBtn.addEventListener('click', exportToPDF);
+        clearEventBtn.addEventListener('click', clearEvent);
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                if (tabName === 'events') {
+                    eventsTab.classList.remove('hidden');
+                    currentEventTab.classList.add('hidden');
+                } else {
+                    eventsTab.classList.add('hidden');
+                    currentEventTab.classList.remove('hidden');
+                }
+            });
+        });
+        
+        // Verificar tema salvo
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeToggle.checked = true;
+        }
+        
+        // Carregar eventos salvos
+        loadEvents();
+        
+        // Funções
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        function createEvent() {
+            const name = eventNameInput.value.trim();
+            const description = eventDescriptionInput.value.trim();
+            
+            if (!name) {
+                alert('Por favor, informe um nome para o evento.');
+                return;
+            }
+            
+            const eventId = Date.now().toString();
+            const newEvent = {
+                id: eventId,
+                name,
+                description,
+                participants: [],
+                expenses: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            events.push(newEvent);
+            saveEvents();
+            loadEvents();
+            
+            eventNameInput.value = '';
+            eventDescriptionInput.value = '';
+            
+            // Abrir o evento recém-criado
+            openEvent(eventId);
+        }
+        
+        function loadEvents() {
+            eventsList.innerHTML = '';
+            
+            if (events.length === 0) {
+                eventsList.innerHTML = '<li class="event-item">Nenhum evento criado ainda.</li>';
+                return;
+            }
+            
+            // Ordenar eventos por data (mais recente primeiro)
+            events.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            events.forEach(event => {
+                const li = document.createElement('li');
+                li.className = 'event-item';
+                
+                const eventInfo = document.createElement('div');
+                eventInfo.innerHTML = `
+                    <strong>${event.name}</strong>
+                    <div><small>${new Date(event.createdAt).toLocaleDateString('pt-BR')}</small></div>
+                    ${event.description ? `<div><small>${event.description}</small></div>` : ''}
+                `;
+                
+                const openBtn = document.createElement('button');
+                openBtn.innerHTML = '<i class="fas fa-door-open"></i> Abrir';
+                openBtn.className = 'success';
+                openBtn.addEventListener('click', () => openEvent(event.id));
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.className = 'danger';
+                deleteBtn.addEventListener('click', () => deleteEvent(event.id));
+                
+                const btnContainer = document.createElement('div');
+                btnContainer.style.display = 'flex';
+                btnContainer.style.gap = '8px';
+                btnContainer.appendChild(openBtn);
+                btnContainer.appendChild(deleteBtn);
+                
+                li.appendChild(eventInfo);
+                li.appendChild(btnContainer);
+                eventsList.appendChild(li);
+            });
+        }
+        
+        function openEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (!event) return;
+            
+            currentEvent = event;
+            participants = event.participants || [];
+            expenses = event.expenses || [];
+            
+            // Atualizar a UI
+            eventTitleSpan.textContent = event.name;
+            eventDescriptionText.textContent = event.description || 'Sem descrição';
+            eventDescriptionText.style.display = event.description ? 'block' : 'none';
+            
+            updateParticipantsUI();
+            updateExpenseForm();
+            updateExpensesUI();
+            calculateBalances();
+            
+            // Mudar para a aba do evento atual
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="current-event"]').classList.add('active');
+            eventsTab.classList.add('hidden');
+            currentEventTab.classList.remove('hidden');
+        }
+        
+        function deleteEvent(eventId) {
+            if (!confirm('Tem certeza que deseja excluir este evento? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            events = events.filter(e => e.id !== eventId);
+            saveEvents();
+            loadEvents();
+            
+            // Se estávamos visualizando o evento excluído, voltar para a lista
+            if (currentEvent && currentEvent.id === eventId) {
+                backToEvents();
+            }
+        }
+        
+        function backToEvents() {
+            // Salvar o evento atual antes de sair
+            if (currentEvent) {
+                saveCurrentEvent();
+            }
+            
+            currentEvent = null;
+            participants = [];
+            expenses = [];
+            
+            // Resetar a UI
+            updateParticipantsUI();
+            updateExpenseForm();
+            updateExpensesUI();
+            calculateBalances();
+            
+            // Voltar para a aba de eventos
+            tabs.forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="events"]').classList.add('active');
+            eventsTab.classList.remove('hidden');
+            currentEventTab.classList.add('hidden');
+        }
+        
+        function exportEvent() {
+            if (!currentEvent) return;
+            
+            saveCurrentEvent();
+            
+            const dataStr = JSON.stringify(currentEvent, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `racha-ai-${currentEvent.name.toLowerCase().replace(/\s+/g, '-')}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        function exportToExcel() {
+            if (!currentEvent || participants.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+            
+            saveCurrentEvent();
+            
+            // Calcular saldos
+            const balances = calculateBalancesForExport();
+            
+            // Criar planilha com várias abas
+            const wb = XLSX.utils.book_new();
+            
+            // Aba 1: Resumo do Evento
+            const eventData = [
+                ['Evento', currentEvent.name],
+                ['Descrição', currentEvent.description || 'N/A'],
+                ['Data de Criação', new Date(currentEvent.createdAt).toLocaleDateString('pt-BR')],
+                ['Total de Participantes', participants.length],
+                ['Total de Despesas', expenses.length],
+                ['Valor Total', expenses.reduce((sum, expense) => sum + expense.amount, 0).toFixed(2)]
+            ];
+            const wsEvent = XLSX.utils.aoa_to_sheet([['RESUMO DO EVENTO'], ...eventData]);
+            XLSX.utils.book_append_sheet(wb, wsEvent, 'Resumo');
+            
+            // Aba 2: Participantes e Saldos
+            const participantsData = [['Participante', 'Saldo (R$)']];
+            for (const participant in balances) {
+                participantsData.push([participant, balances[participant]]);
+            }
+            const wsParticipants = XLSX.utils.aoa_to_sheet(participantsData);
+            XLSX.utils.book_append_sheet(wb, wsParticipants, 'Saldos');
+            
+            // Aba 3: Despesas
+            const expensesData = [['Descrição', 'Valor (R$)', 'Pagante', 'Participantes', 'Data']];
+            expenses.forEach(expense => {
+                expensesData.push([
+                    expense.description,
+                    expense.amount,
+                    expense.payer,
+                    expense.participants.join(', '),
+                    new Date(expense.date).toLocaleDateString('pt-BR')
+                ]);
+            });
+            const wsExpenses = XLSX.utils.aoa_to_sheet(expensesData);
+            XLSX.utils.book_append_sheet(wb, wsExpenses, 'Despesas');
+            
+            // Aba 4: Acertos
+            const settlements = calculateSettlementsForExport(balances);
+            const settlementsData = [['Devedor', 'Credor', 'Valor (R$)']];
+            settlements.forEach(s => {
+                settlementsData.push([s.from, s.to, s.amount]);
+            });
+            const wsSettlements = XLSX.utils.aoa_to_sheet(settlementsData);
+            XLSX.utils.book_append_sheet(wb, wsSettlements, 'Acertos');
+            
+            // Exportar arquivo
+            XLSX.writeFile(wb, `racha-ai-${currentEvent.name.toLowerCase().replace(/\s+/g, '-')}.xlsx`);
+        }
+        
+        function exportToPDF() {
+            if (!currentEvent || participants.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+            
+            saveCurrentEvent();
+            
+            // Calcular saldos
+            const balances = calculateBalancesForExport();
+            const settlements = calculateSettlementsForExport(balances);
+            
+            // Criar novo documento PDF
+            const doc = new jsPDF();
+            
+            // Adicionar título
+            doc.setFontSize(20);
+            doc.setTextColor(255, 107, 107);
+            doc.text('Racha Aí - Relatório de Despesas', 105, 20, { align: 'center' });
+            
+            // Informações do evento
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Evento: ${currentEvent.name}`, 14, 35);
+            doc.text(`Data: ${new Date(currentEvent.createdAt).toLocaleDateString('pt-BR')}`, 14, 45);
+            
+            if (currentEvent.description) {
+                doc.text(`Descrição: ${currentEvent.description}`, 14, 55);
+            }
+            
+            // Tabela de saldos
+            doc.setFontSize(14);
+            doc.setTextColor(255, 107, 107);
+            doc.text('Saldos dos Participantes', 14, 75);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            const balancesData = [['Participante', 'Saldo (R$)']];
+            for (const participant in balances) {
+                balancesData.push([participant, balances[participant].toFixed(2)]);
+            }
+            
+            doc.autoTable({
+                startY: 80,
+                head: [balancesData[0]],
+                body: balancesData.slice(1),
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [255, 107, 107],
+                    textColor: [255, 255, 255]
+                }
+            });
+            
+            // Tabela de acertos
+            let finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(14);
+            doc.setTextColor(255, 107, 107);
+            doc.text('Acertos Recomendados', 14, finalY);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            const settlementsData = [['Devedor', 'Credor', 'Valor (R$)']];
+            settlements.forEach(s => {
+                settlementsData.push([s.from, s.to, s.amount.toFixed(2)]);
+            });
+            
+            doc.autoTable({
+                startY: finalY + 5,
+                head: [settlementsData[0]],
+                body: settlementsData.slice(1),
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [78, 205, 196],
+                    textColor: [255, 255, 255]
+                }
+            });
+            
+            // Adicionar página para despesas se necessário
+            finalY = doc.lastAutoTable.finalY + 15;
+            if (finalY > 240) {
+                doc.addPage();
+                finalY = 20;
+            }
+            
+            // Tabela de despesas
+            doc.setFontSize(14);
+            doc.setTextColor(255, 107, 107);
+            doc.text('Despesas Registradas', 14, finalY);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            const expensesData = [['Descrição', 'Valor (R$)', 'Pagante', 'Data']];
+            expenses.forEach(expense => {
+                expensesData.push([
+                    expense.description,
+                    expense.amount.toFixed(2),
+                    expense.payer,
+                    new Date(expense.date).toLocaleDateString('pt-BR')
+                ]);
+            });
+            
+            doc.autoTable({
+                startY: finalY + 5,
+                head: [expensesData[0]],
+                body: expensesData.slice(1),
+                theme: 'grid',
+                headStyles: {
+                    fillColor: [255, 142, 83],
+                    textColor: [255, 255, 255]
+                }
+            });
+            
+            // Rodapé com assinatura
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                doc.text(`Página ${i} de ${pageCount}`, 105, 285, { align: 'center' });
+                
+                if (i === pageCount) {
+                    doc.text('Relatório gerado por Racha Aí - criado por Levant by Rebeca Moura', 105, 290, { align: 'center' });
+                }
+            }
+            
+            // Salvar PDF
+            doc.save(`racha-ai-${currentEvent.name.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+        }
+        
+        function calculateBalancesForExport() {
+            // Inicializar saldos
+            const balances = {};
+            participants.forEach(participant => {
+                balances[participant] = 0;
+            });
+            
+            // Calcular saldos
+            expenses.forEach(expense => {
+                const share = expense.amount / expense.participants.length;
+                
+                // Quem pagou recebe o valor total
+                balances[expense.payer] += expense.amount;
+                
+                // Cada participante deve sua parte
+                expense.participants.forEach(participant => {
+                    balances[participant] -= share;
+                });
+            });
+            
+            // Arredondar valores
+            for (const participant in balances) {
+                balances[participant] = Math.round(balances[participant] * 100) / 100;
+            }
+            
+            return balances;
+        }
+        
+        function calculateSettlementsForExport(balances) {
+            const settlements = [];
+            
+            // Simplificar dívidas
+            const debts = [];
+            const credits = [];
+            
+            for (const participant in balances) {
+                const balance = balances[participant];
+                if (balance < 0) {
+                    debts.push({ participant, amount: -balance });
+                } else if (balance > 0) {
+                    credits.push({ participant, amount: balance });
+                }
+            }
+            
+            // Ordenar devedores e credores
+            debts.sort((a, b) => b.amount - a.amount);
+            credits.sort((a, b) => b.amount - a.amount);
+            
+            // Calcular acertos
+            let i = 0, j = 0;
+            
+            while (i < debts.length && j < credits.length) {
+                const debt = debts[i];
+                const credit = credits[j];
+                
+                const amount = Math.min(debt.amount, credit.amount);
+                
+                settlements.push({
+                    from: debt.participant,
+                    to: credit.participant,
+                    amount: Math.round(amount * 100) / 100
+                });
+                
+                debt.amount -= amount;
+                credit.amount -= amount;
+                
+                if (debt.amount < 0.01) i++;
+                if (credit.amount < 0.01) j++;
+            }
+            
+            return settlements;
+        }
+        
+        function clearEvent() {
+            if (!currentEvent || !confirm('Tem certeza que deseja limpar este evento? Todos os participantes e despesas serão removidos.')) {
+                return;
+            }
+            
+            participants = [];
+            expenses = [];
+            
+            updateParticipantsUI();
+            updateExpenseForm();
+            updateExpensesUI();
+            calculateBalances();
+            
+            saveCurrentEvent();
+        }
+        
+        function saveCurrentEvent() {
+            if (!currentEvent) return;
+            
+            // Encontrar o índice do evento atual na lista
+            const eventIndex = events.findIndex(e => e.id === currentEvent.id);
+            if (eventIndex === -1) return;
+            
+            // Atualizar os dados do evento
+            events[eventIndex].participants = participants;
+            events[eventIndex].expenses = expenses;
+            
+            saveEvents();
+        }
+        
+        function saveEvents() {
+            localStorage.setItem('rachaAiEvents', JSON.stringify(events));
+        }
+        
+        function addParticipant() {
+            const name = participantNameInput.value.trim();
+            if (name && !participants.includes(name)) {
+                participants.push(name);
+                participantNameInput.value = '';
+                updateParticipantsUI();
+                updateExpenseForm();
+                saveCurrentEvent();
+            } else if (participants.includes(name)) {
+                alert('Já existe um participante com esse nome!');
+            }
+        }
+        
+        function updateParticipantsUI() {
+            participantsList.innerHTML = '';
+            participants.forEach(participant => {
+                const li = document.createElement('li');
+                li.className = 'participant-item';
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = participant;
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.className = 'danger';
+                deleteBtn.title = 'Remover participante';
+                deleteBtn.addEventListener('click', () => removeParticipant(participant));
+                
+                li.appendChild(nameSpan);
+                li.appendChild(deleteBtn);
+                participantsList.appendChild(li);
+            });
+        }
+        
+        function removeParticipant(participant) {
+            if (confirm(`Tem certeza que deseja remover ${participant}? Todas as despesas relacionadas serão excluídas.`)) {
+                participants = participants.filter(p => p !== participant);
+                expenses = expenses.filter(expense => 
+                    expense.payer !== participant && 
+                    !expense.participants.includes(participant)
+                );
+                updateParticipantsUI();
+                updateExpenseForm();
+                updateExpensesUI();
+                calculateBalances();
+                saveCurrentEvent();
+            }
+        }
+        
+        function updateExpenseForm() {
+            // Atualizar select de pagante
+            expensePayerSelect.innerHTML = '';
+            participants.forEach(participant => {
+                const option = document.createElement('option');
+                option.value = participant;
+                option.textContent = participant;
+                expensePayerSelect.appendChild(option);
+            });
+            
+            // Atualizar checkboxes de participantes
+            expenseParticipantsDiv.innerHTML = '';
+            participants.forEach(participant => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-container';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = participant;
+                checkbox.checked = true;
+                
+                const span = document.createElement('span');
+                span.textContent = participant;
+                
+                label.appendChild(checkbox);
+                label.appendChild(span);
+                expenseParticipantsDiv.appendChild(label);
+            });
+        }
+        
+        function addExpense() {
+            const description = expenseDescInput.value.trim();
+            const amount = parseFloat(expenseAmountInput.value);
+            const payer = expensePayerSelect.value;
+            
+            const selectedParticipants = Array.from(
+                expenseParticipantsDiv.querySelectorAll('input:checked')
+            ).map(cb => cb.value);
+            
+            if (!description || isNaN(amount) || amount <= 0 || selectedParticipants.length === 0) {
+                alert('Por favor, preencha todos os campos corretamente.');
+                return;
+            }
+            
+            expenses.push({
+                description,
+                amount,
+                payer,
+                participants: selectedParticipants,
+                date: new Date().toISOString()
+            });
+            
+            expenseDescInput.value = '';
+            expenseAmountInput.value = '';
+            
+            updateExpensesUI();
+            calculateBalances();
+            saveCurrentEvent();
+        }
+        
+        function updateExpensesUI() {
+            expensesList.innerHTML = '';
+            expenses.forEach((expense, index) => {
+                const li = document.createElement('li');
+                li.className = 'expense-item';
+                
+                const expenseInfo = document.createElement('div');
+                expenseInfo.innerHTML = `
+                    <strong>${expense.description}</strong>: R$ ${expense.amount.toFixed(2)}<br>
+                    <small>Pago por: ${expense.payer}, Dividido entre: ${expense.participants.join(', ')}</small>
+                `;
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.className = 'danger';
+                deleteBtn.title = 'Excluir despesa';
+                deleteBtn.addEventListener('click', () => removeExpense(index));
+                
+                li.appendChild(expenseInfo);
+                li.appendChild(deleteBtn);
+                expensesList.appendChild(li);
+            });
+        }
+        
+        function removeExpense(index) {
+            if (confirm('Tem certeza que deseja excluir esta despesa?')) {
+                expenses.splice(index, 1);
+                updateExpensesUI();
+                calculateBalances();
+                saveCurrentEvent();
+            }
+        }
+        
+        function calculateBalances() {
+            // Inicializar saldos
+            const balances = {};
+            participants.forEach(participant => {
+                balances[participant] = 0;
+            });
+            
+            // Calcular saldos
+            expenses.forEach(expense => {
+                const share = expense.amount / expense.participants.length;
+                
+                // Quem pagou recebe o valor total
+                balances[expense.payer] += expense.amount;
+                
+                // Cada participante deve sua parte
+                expense.participants.forEach(participant => {
+                    balances[participant] -= share;
+                });
+            });
+            
+            // Atualizar UI de saldos
+            balancesDiv.innerHTML = '';
+            for (const participant in balances) {
+                const balance = balances[participant];
+                const p = document.createElement('p');
+                
+                if (balance > 0) {
+                    p.innerHTML = `<span class="balance-positive">${participant} deve receber R$ ${balance.toFixed(2)}</span>`;
+                } else if (balance < 0) {
+                    p.innerHTML = `<span class="balance-negative">${participant} deve pagar R$ ${Math.abs(balance).toFixed(2)}</span>`;
+                } else {
+                    p.innerHTML = `${participant} está quite`;
+                }
+                
+                balancesDiv.appendChild(p);
+            }
+            
+            // Calcular e exibir acertos
+            calculateSettlements(balances);
+        }
+        
+        function calculateSettlements(balances) {
+            settlementsDiv.innerHTML = '';
+            
+            // Simplificar dívidas
+            const debts = [];
+            const credits = [];
+            
+            for (const participant in balances) {
+                const balance = balances[participant];
+                if (balance < 0) {
+                    debts.push({ participant, amount: -balance });
+                } else if (balance > 0) {
+                    credits.push({ participant, amount: balance });
+                }
+            }
+            
+            // Ordenar devedores e credores
+            debts.sort((a, b) => b.amount - a.amount);
+            credits.sort((a, b) => b.amount - a.amount);
+            
+            // Calcular acertos
+            let i = 0, j = 0;
+            
+            while (i < debts.length && j < credits.length) {
+                const debt = debts[i];
+                const credit = credits[j];
+                
+                const amount = Math.min(debt.amount, credit.amount);
+                
+                const settlement = document.createElement('div');
+                settlement.className = 'settlement-item';
+                settlement.innerHTML = `
+                    <strong>${debt.participant}</strong> deve pagar R$ ${amount.toFixed(2)} para <strong>${credit.participant}</strong>
+                `;
+                
+                settlementsDiv.appendChild(settlement);
+                
+                debt.amount -= amount;
+                credit.amount -= amount;
+                
+                if (debt.amount < 0.01) i++;
+                if (credit.amount < 0.01) j++;
+            }
+            
+            if (settlementsDiv.children.length === 0) {
+                settlementsDiv.innerHTML = '<p>Nenhum acerto necessário. Todos estão quite!</p>';
+            }
+        }
+        
+        // Inicializar a UI
+        updateParticipantsUI();
+        updateExpenseForm();
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "rachai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Aplicação estática para divisão de despesas entre participantes de eventos",
+  "scripts": {
+    "test": "node tests/smoke.cjs"
+  }
+}
