@@ -1,5 +1,13 @@
 # Racha Aí
 
+<!-- project-badges:start -->
+![Interface: HTML · CSS · JavaScript](https://img.shields.io/static/v1?label=Interface&message=HTML%20%C2%B7%20CSS%20%C2%B7%20JavaScript&color=E34F26&style=flat)
+![Dados: LocalStorage](https://img.shields.io/static/v1?label=Dados&message=LocalStorage&color=blue&style=flat)
+[![Autoria: Rebeca Diniz Moura](https://img.shields.io/static/v1?label=Autoria&message=Rebeca%20Diniz%20Moura&color=8b5cf6&style=flat)](https://github.com/RebecaGis)
+[![Licença: Apache-2.0](https://img.shields.io/static/v1?label=Licen%C3%A7a&message=Apache-2.0&color=blue&style=flat)](https://github.com/RebecaGis/Rachai/blob/docs/badges-2026-11-10/LICENSE)
+<!-- project-badges:end -->
+
+
 Aplicação web para dividir despesas de eventos entre participantes, calcular saldos e sugerir acertos.
 
 [Acessar o aplicativo publicado](https://rachaai.netlify.app/)
